@@ -3,4 +3,6 @@ project(chat_bot)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(chat_bot main.cpp)
+add_executable(chat_bot main.cpp
+        functions.cpp
+        header.h)
