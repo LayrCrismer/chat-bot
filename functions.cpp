@@ -74,6 +74,66 @@ void answer(const vector<questions_and_answers>& db, const string& botName) {
     }
 }
 
+void add_question(vector<questions_and_answers>& db, const string& filename, const string& botName) {
+    string q,a;
+    cout<<"Введите новый вопрос: ";
+    getline(cin,q);
+    cout<<"Введите ответ на него: ";
+    getline(cin,a);
+    if (!q.empty() && !a.empty()) {
+        db.push_back({q, a});
+        data_save_tf(db, filename, botName);
+    } else {
+        cout<<"Ошибка: Вопрос или ответ не могут быть пустыми!\n";
+    }
+}
+
+void delete_question(vector<questions_and_answers>& db, const string& filename, const string& botName) {
+    if (db.size()==0) {
+        cout<<"\nБаза вопросов-ответов пуста.\n";
+    }
+    int index;
+    cout<<"Введите номер вопроса для удаления: \n";
+    cin>>index;
+    if (index > 0 && index <= db.size()) {
+        db.erase(db.begin() + (index-1));
+        data_save_tf(db,filename,botName);
+    } else {
+        cout<<"Неверный номер!\n";
+    }
+}
+
+void edit_question(vector<questions_and_answers>& db, const string& filename, const string& botName) {
+    if (db.size()==0) {
+        cout<<"\nБаза вопросов-ответов пуста.\n";
+        return;
+    }
+    int index;
+    cout<<"Введите номер вопроса для редактирования: \n";
+    cin>>index;
+    if (index > 0 && index <= db.size()) {
+        cin.ignore();
+        cout<<"Старый вопрос: '"<<db[index-1].question<<"'\n";
+        cout<<"Новый вопрос: \n";
+        getline(cin,db[index-1].question);
+        cout<<"Старый ответ: '"<<db[index-1].answer<<"'\n";
+        cout<<"Новый ответ: \n";
+        getline(cin,db[index-1].answer);
+        data_save_tf(db,filename, botName);
+    }
+    else {
+        cout<<"Неверный номер!\n";
+    }
+
+}
+
+void rename_bot(vector<questions_and_answers>& db, const string& filename, string& botName) {
+    cout<<"Введите новое имя бота: ";
+    getline(cin,botName);
+    data_save_tf(db,filename, botName);
+    cout<<"Имя успешно изменено!\n";
+}
+
 void admin_mode(vector<questions_and_answers>& db, const string& filename, string& botName) {
 
     int action;
@@ -93,58 +153,12 @@ void admin_mode(vector<questions_and_answers>& db, const string& filename, strin
         cin>>action;
         if (action == 0) break;
         cin.ignore();
-        if (action == 1) {
-            string q,a;
-            cout<<"Введите новый вопрос: ";
-            getline(cin,q);
-            //cin.ignore();
-            cout<<"Введите ответ на него: ";
-            getline(cin,a);
-            db.push_back({q,a});
-            data_save_tf(db,filename, botName);
-        }
-        else if (action==2) {
-            int index;
-            if (db.size()==0) {
-                cout<<"\nБаза вопросов-ответов пуста.\n";
-                continue;
-            }
-            cout<<"Введите номер вопроса для удаления: \n";
-            cin>>index;
-            if (index > 0 && index <= db.size()) {
-                db.erase(db.begin() + (index-1));
-                data_save_tf(db,filename,botName);
-            } else {
-                cout<<"Неверный номер!\n";
-            }
-        }
-        else if (action == 3) {
-            int index;
-            if (db.size()==0) {
-                cout<<"\nБаза вопросов-ответов пуста.\n";
-                continue;
-            }
-            cout<<"Введите номер вопроса для редактирования: \n";
-            cin>>index;
-            if (index > 0 && index <= db.size()) {
-                cin.ignore();
-                cout<<"Старый вопрос: '"<<db[index-1].question<<"'\n";
-                cout<<"Новый вопрос: \n";
-                getline(cin,db[index-1].question);
-                cout<<"Старый ответ: '"<<db[index-1].answer<<"'\n";
-                cout<<"Новый ответ: \n";
-                getline(cin,db[index-1].answer);
-                data_save_tf(db,filename, botName);
-            }
-            else {
-                cout<<"Неверный номер!\n";
-            }
-        }
-        else if (action == 4) {
-            cout<<"Введите новое имя бота: ";
-            getline(cin,botName);
-            data_save_tf(db,filename, botName);
-            cout<<"Имя успешно изменено!\n";
+        switch (action) {
+            case 1: add_question(db, filename, botName); break;
+            case 2: delete_question(db, filename, botName); break;
+            case 3: edit_question(db, filename, botName); break;
+            case 4: rename_bot(db, filename, botName); break;
+            default: cout<<"Неверная команда!\n"; break;
         }
     }
 }
