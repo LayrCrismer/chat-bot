@@ -5,13 +5,15 @@
 #include <algorithm>
 using namespace std;
 
-void data_load_ff(vector<questions_and_answers>& db, const string& filename) {
+void data_load_ff(vector<questions_and_answers>& db, const string& filename, string& botName) {
     cout<<"Загрузка базы вопросов-ответов...\n";
     ifstream file(filename);
     if (!file.is_open()) {
         cout<<"Файл не найден";
         return;
     }
+
+    getline(file, botName);
     cout<<"База успешно загружена!\n";
     string q, a;
     while (getline(file, q) && getline(file, a)) {
@@ -25,11 +27,12 @@ void data_load_ff(vector<questions_and_answers>& db, const string& filename) {
     file.close();
 }
 
-void data_save_tf(vector<questions_and_answers>& db, const string& filename) {
+void data_save_tf(vector<questions_and_answers>& db, const string& filename, const string& botName) {
     ofstream file(filename);
     if (file.is_open()) {
+        file<<botName<<"\n";
         for (const auto& item : db) {
-            file <<item.question<<"\n"<<item.answer<<"\n";
+            file<<item.question<<"\n"<<item.answer<<"\n";
         }
         file.close();
         cout<<"База вопросов-ответов успешно сохранена!\n";
@@ -40,7 +43,7 @@ void data_save_tf(vector<questions_and_answers>& db, const string& filename) {
 
 }
 
-void answer(const vector<questions_and_answers>& db) {
+void answer(const vector<questions_and_answers>& db, const string& botName) {
     cout<<"\n(Введите 'back' чтобы вернуться в главное меню)\n";
     string question;
     cin.ignore();
@@ -54,29 +57,35 @@ void answer(const vector<questions_and_answers>& db) {
         bool found = false;
         for (const auto& item : db) {
             //cout<<"Сравниваю: ["<<item.question<<"] и ["<<question<<"]"<<endl;
+            if (question == "Как тебя зовут?" || question == "Твоё имя?" || question == "Ты кто?") {
+                cout<<botName<<": Меня зовут "<<botName<<"\n";
+                found = true;
+                break;
+            }
             if (item.question == question) {
-                cout<<"- "<<item.answer<<"\n";
+                cout<<botName<<": "<<item.answer<<"\n";
                 found = true;
                 break;
             }
         }
         if (!found) {
-            cout<<"Ответ: Я не знаю ответа на этот вопрос :( \n";
+            cout<<"- Я не знаю ответа на этот вопрос :( \n";
         }
     }
 }
 
-void admin_mode(vector<questions_and_answers>& db, const string& filename) {
+void admin_mode(vector<questions_and_answers>& db, const string& filename, string& botName) {
 
     int action;
 
     while (true) {
         cout<<"===============================================\n";
-        cout<<">>Админ-панель<<\n";
+        cout<<"                 Админ-панель\n";
         cout<<"===============================================\n";
         cout<<"1. Добавить вопрос-ответ\n";
         cout<<"2. Удалить вопрос\n";
         cout<<"3. Редактировать запись\n";
+        cout<<"4. Изменить имя бота\n";
         cout<<"0. Выход в меню\n";
         cout<<"===============================================\n";
         cout<<"Введите команду, чтобы продолжить: ";
@@ -92,7 +101,7 @@ void admin_mode(vector<questions_and_answers>& db, const string& filename) {
             cout<<"Введите ответ на него: ";
             getline(cin,a);
             db.push_back({q,a});
-            data_save_tf(db,filename);
+            data_save_tf(db,filename, botName);
         }
         else if (action==2) {
             int index;
@@ -104,7 +113,7 @@ void admin_mode(vector<questions_and_answers>& db, const string& filename) {
             cin>>index;
             if (index > 0 && index <= db.size()) {
                 db.erase(db.begin() + (index-1));
-                data_save_tf(db,filename);
+                data_save_tf(db,filename,botName);
             } else {
                 cout<<"Неверный номер!\n";
             }
@@ -119,15 +128,23 @@ void admin_mode(vector<questions_and_answers>& db, const string& filename) {
             cin>>index;
             if (index > 0 && index <= db.size()) {
                 cin.ignore();
-                cout<<"Новый текст вопроса: \n";
+                cout<<"Старый вопрос: '"<<db[index-1].question<<"'\n";
+                cout<<"Новый вопрос: \n";
                 getline(cin,db[index-1].question);
-                cout<<"Новый текст ответа: \n";
+                cout<<"Старый ответ: '"<<db[index-1].answer<<"'\n";
+                cout<<"Новый ответ: \n";
                 getline(cin,db[index-1].answer);
-                data_save_tf(db,filename);
+                data_save_tf(db,filename, botName);
             }
             else {
                 cout<<"Неверный номер!\n";
             }
+        }
+        else if (action == 4) {
+            cout<<"Введите новое имя бота: ";
+            getline(cin,botName);
+            data_save_tf(db,filename, botName);
+            cout<<"Имя успешно изменено!\n";
         }
     }
 }

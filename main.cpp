@@ -7,12 +7,22 @@ using namespace std;
 int main() {
 
     int choise;
+    string botName = "Адам";
     bool running = true;
     vector<questions_and_answers> answersesbase;
     string filename = "QA_base.txt";
     char loadbase;
-    cout<<"Добро пожаловать в Чат-бота!\nЗагрузить существующую базу данных? (y/n): ";
-    cin>>loadbase;
+
+
+    while (true) {
+        cout<<"Загрузить существующую базу данных? (y/n): ";
+        if (!(cin>>loadbase)) {
+            cin.ignore();
+            continue;
+        }
+        if (loadbase == 'y' || loadbase == 'Y' || loadbase == 'n' || loadbase == 'N') break;
+        cout<<"Некорректный ввод!\n";
+    }
 
     if (loadbase == 'y' || loadbase == 'Y') {
 
@@ -24,7 +34,7 @@ int main() {
             ifstream checkfile(filename);
             if (checkfile.is_open()) {
                 checkfile.close();
-                data_load_ff(answersesbase, filename);
+                data_load_ff(answersesbase, filename, botName);
                 fileloaded = true;
             }
             else {
@@ -32,20 +42,21 @@ int main() {
             }
         } while (!fileloaded);
     }
-    else {
+    else if (loadbase == 'n' || loadbase == 'N') {
         cout<<"Создание новой базы...\nВведите имя для нового файла базы (Например, base.txt): ";
         cin>>filename;
     }
     cin.ignore();
-
+    cout<<"Добро пожаловать в Чат-бота "<<botName<<"!\n";
     while(running) {
         cout<<endl;
-        cout<<"Вас приветствует чат-бот для вопросов и ответов\n";
+        cout<<"===============================================\n";
+        cout<<"     Вас приветствует чат-бот "<<botName<<"!\n";
         cout<<"===============================================\n";
         cout<<"Список команд:\n";
         cout<<"1. Задать вопрос\n";
         cout<<"2. Показать все вопросы\n";
-        cout<<"3. Админ-мод\n";
+        cout<<"3. Админ-панель\n";
         cout<<"0. Выход\n";
         cout<<"===============================================\n";
         cout<<"Введите команду, чтобы продолжить: ";
@@ -58,13 +69,13 @@ int main() {
             }
             switch(choise) {
                 case 1:
-                    answer(answersesbase);
+                    answer(answersesbase, botName);
                     break;
                 case 2:
                     questions_view(answersesbase, filename);
                     break;
                 case 3:
-                    admin_mode(answersesbase, filename);
+                    admin_mode(answersesbase, filename,botName);
                     break;
                 case 0:
                     running = false;
