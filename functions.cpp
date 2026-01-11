@@ -55,6 +55,9 @@ void answer(const vector<questions_and_answers>& db, const string& botName) {
         if (!getline(cin, question) || question == "back") {
             break;
         }
+        if (question.empty() || question.find_first_not_of(" \t\n\r") == string::npos) {
+            continue;
+        }
 
         bool found = false;
         for (const auto& item : db) {
@@ -77,16 +80,24 @@ void answer(const vector<questions_and_answers>& db, const string& botName) {
 
 void add_question(vector<questions_and_answers>& db, const string& filename, const string& botName) {
     string q,a;
-    cout<<"Введите новый вопрос: ";
-    getline(cin,q);
-    cout<<"Введите ответ на него: ";
-    getline(cin,a);
-    if (!q.empty() && !a.empty()) {
-        db.push_back({q, a});
-        data_save_tf(db, filename, botName);
-    } else {
-        cout<<RED<<"Ошибка: Вопрос или ответ не могут быть пустыми!\n"<<WHITE;
+
+    while (true) {
+        cout<<"Введите новый вопрос: ";
+        getline(cin,q);
+        if (q.empty() || q.find_first_not_of(" \t\n\r") == string::npos) {
+            cout<<RED<<"Ошибка: Вопрос не могжет быть пустым!\n"<<WHITE;
+        } else break;
     }
+    while (true) {
+        cout<<"Введите ответ на него: ";
+        getline(cin,a);
+        if (a.empty() || a.find_first_not_of(" \t\n\r") == string::npos) {
+            cout<<RED<<"Ошибка: Ответ не могжет быть пустым!\n"<<WHITE;
+        } else break;
+    }
+    db.push_back({q, a});
+    data_save_tf(db, filename, botName);
+    cout<<GREEN<<"Вопрос успешно добавлен!\n"<<WHITE;
 }
 
 void delete_question(vector<questions_and_answers>& db, const string& filename, const string& botName) {
@@ -115,12 +126,24 @@ void edit_question(vector<questions_and_answers>& db, const string& filename, co
     if (index > 0 && index <= db.size()) {
         cin.ignore();
         cout<<GRAY<<"Старый вопрос: '"<<db[index-1].question<<"'\n"<<WHITE;
-        cout<<"Новый вопрос: \n";
-        getline(cin,db[index-1].question);
+        while (true) {
+            cout<<"Новый вопрос: \n";
+            getline(cin,db[index-1].question);
+            if (db[index-1].question.empty() || db[index-1].question.find_first_not_of(" \t\n\r") == string::npos) {
+                cout<<RED<<"Ошибка: Вопрос не могжет быть пустым!\n"<<WHITE;
+            } else break;
+        }
         cout<<GRAY<<"Старый ответ: '"<<db[index-1].answer<<"'\n"<<WHITE;
-        cout<<"Новый ответ: \n";
-        getline(cin,db[index-1].answer);
+        while (true) {
+            cout<<"Новый ответ: \n";
+            getline(cin,db[index-1].answer);
+            if (db[index-1].answer.empty() || db[index-1].answer.find_first_not_of(" \t\n\r") == string::npos) {
+                cout<<RED<<"Ошибка: Ответ не могжет быть пустым!\n"<<WHITE;
+            } else break;
+        }
+
         data_save_tf(db,filename, botName);
+        cout<<GREEN<<"Вопрос успешно изменён!\n"<<WHITE;
     }
     else {
         cout<<RED<<"Неверный номер!\n"<<WHITE;
@@ -129,8 +152,16 @@ void edit_question(vector<questions_and_answers>& db, const string& filename, co
 }
 
 void rename_bot(vector<questions_and_answers>& db, const string& filename, string& botName) {
-    cout<<"Введите новое имя бота: ";
-    getline(cin,botName);
+    string newName;
+    while (true) {
+        cout<<"Введите новое имя бота: ";
+        getline(cin,newName);
+        if (!newName.empty() && newName.find_first_not_of(" ") != string::npos) {
+            botName = newName;
+            break;
+        }
+        cout<<RED<<"Имя не может быть пустым!\n"<<WHITE;
+    }
     data_save_tf(db,filename, botName);
     cout<<GREEN<<"Имя успешно изменено!\n"<<WHITE;
 }
@@ -151,13 +182,13 @@ void admin_mode(vector<questions_and_answers>& db, const string& filename, strin
         cout<<"===============================================\n";
         cout<<"Введите команду, чтобы продолжить: ";
 
-        cin.ignore();
         if (!(cin>>action)) {
             cout<<RED<<"\nОшибка! Введите число 0-4!\n"<<WHITE;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
         }
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         if (action == 0) break;
         switch (action) {
             case 1: add_question(db, filename, botName); break;
