@@ -38,7 +38,7 @@ int main() {
                 fileloaded = true;
             }
             else {
-                cout<<"Ошибка: файл "<<filename<<" не найден. Попробуйте снова.\n";
+                cout<<RED<<"Ошибка: файл "<<filename<<" не найден. Попробуйте снова.\n"<<WHITE;
             }
         } while (!fileloaded);
     }
@@ -47,11 +47,10 @@ int main() {
         cin>>filename;
     }
     cin.ignore();
-    cout<<"Добро пожаловать в Чат-бота "<<botName<<"!\n";
     while(running) {
         cout<<endl;
         cout<<"===============================================\n";
-        cout<<"     Вас приветствует чат-бот "<<botName<<"!\n";
+        cout<<GREEN<<"     Вас приветствует чат-бот "<<botName<<"!\n"<<WHITE;
         cout<<"===============================================\n";
         cout<<"Список команд:\n";
         cout<<"1. Задать вопрос\n";
@@ -62,7 +61,7 @@ int main() {
         cout<<"Введите команду, чтобы продолжить: ";
         try {
             if (!(cin>>choise)) {
-                cout<<"\nОшибка! Введите число 0-3!\n";
+                cout<<RED<<"\nОшибка! Введите число 0-3!\n"<<WHITE;
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
@@ -81,11 +80,11 @@ int main() {
                     running = false;
                     break;
                 default:
-                    cout<<"\nОшибка! Введите число 0-3!\n";
+                    cout<<RED<<"\nОшибка! Введите число 0-3!\n"<<WHITE;
                     break;
             }
         } catch (exception& e) {
-            cout<<"Ошибка! Такого варианта нет.";
+            cout<<RED<<"Ошибка! Такого варианта нет."<<WHITE;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }

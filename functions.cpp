@@ -48,7 +48,7 @@ void answer(const vector<questions_and_answers>& db, const string& botName) {
     string question;
     cin.ignore();
     while (true) {
-        cout<<"Ожидаю вопрос...\n";
+        cout<<MAGENTA<<"Пользователь: "<<WHITE;
 
         if (!getline(cin, question) || question == "back") {
             break;
@@ -58,18 +58,18 @@ void answer(const vector<questions_and_answers>& db, const string& botName) {
         for (const auto& item : db) {
             //cout<<"Сравниваю: ["<<item.question<<"] и ["<<question<<"]"<<endl;
             if (question == "Как тебя зовут?" || question == "Твоё имя?" || question == "Ты кто?") {
-                cout<<botName<<": Меня зовут "<<botName<<"\n";
+                cout<<CYAN<<botName<<WHITE<<": Меня зовут "<<botName<<"\n";
                 found = true;
                 break;
             }
             if (item.question == question) {
-                cout<<botName<<": "<<item.answer<<"\n";
+                cout<<CYAN<<botName<<WHITE<<": "<<item.answer<<"\n";
                 found = true;
                 break;
             }
         }
         if (!found) {
-            cout<<"- Я не знаю ответа на этот вопрос :( \n";
+            cout<<CYAN<<botName<<WHITE": Я не знаю ответа на этот вопрос "<<RED<<":( \n"<<WHITE;
         }
     }
 }
@@ -84,13 +84,13 @@ void add_question(vector<questions_and_answers>& db, const string& filename, con
         db.push_back({q, a});
         data_save_tf(db, filename, botName);
     } else {
-        cout<<"Ошибка: Вопрос или ответ не могут быть пустыми!\n";
+        cout<<RED<<"Ошибка: Вопрос или ответ не могут быть пустыми!\n"<<WHITE;
     }
 }
 
 void delete_question(vector<questions_and_answers>& db, const string& filename, const string& botName) {
     if (db.size()==0) {
-        cout<<"\nБаза вопросов-ответов пуста.\n";
+        cout<<RED<<"\nБаза вопросов-ответов пуста.\n"<<WHITE;
     }
     int index;
     cout<<"Введите номер вопроса для удаления: \n";
@@ -99,13 +99,13 @@ void delete_question(vector<questions_and_answers>& db, const string& filename, 
         db.erase(db.begin() + (index-1));
         data_save_tf(db,filename,botName);
     } else {
-        cout<<"Неверный номер!\n";
+        cout<<RED<<"Неверный номер!\n"<<WHITE;
     }
 }
 
 void edit_question(vector<questions_and_answers>& db, const string& filename, const string& botName) {
     if (db.size()==0) {
-        cout<<"\nБаза вопросов-ответов пуста.\n";
+        cout<<RED<<"\nБаза вопросов-ответов пуста.\n"<<WHITE;
         return;
     }
     int index;
@@ -122,7 +122,7 @@ void edit_question(vector<questions_and_answers>& db, const string& filename, co
         data_save_tf(db,filename, botName);
     }
     else {
-        cout<<"Неверный номер!\n";
+        cout<<RED<<"Неверный номер!\n"<<WHITE;
     }
 
 }
@@ -131,7 +131,7 @@ void rename_bot(vector<questions_and_answers>& db, const string& filename, strin
     cout<<"Введите новое имя бота: ";
     getline(cin,botName);
     data_save_tf(db,filename, botName);
-    cout<<"Имя успешно изменено!\n";
+    cout<<GREEN<<"Имя успешно изменено!\n"<<WHITE;
 }
 
 void admin_mode(vector<questions_and_answers>& db, const string& filename, string& botName) {
@@ -140,7 +140,7 @@ void admin_mode(vector<questions_and_answers>& db, const string& filename, strin
 
     while (true) {
         cout<<"===============================================\n";
-        cout<<"                 Админ-панель\n";
+        cout<<GOLD<<"                 Админ-панель\n"<<WHITE;
         cout<<"===============================================\n";
         cout<<"1. Добавить вопрос-ответ\n";
         cout<<"2. Удалить вопрос\n";
@@ -158,7 +158,7 @@ void admin_mode(vector<questions_and_answers>& db, const string& filename, strin
             case 2: delete_question(db, filename, botName); break;
             case 3: edit_question(db, filename, botName); break;
             case 4: rename_bot(db, filename, botName); break;
-            default: cout<<"Неверная команда!\n"; break;
+            default: cout<<RED<<"Неверная команда!\n"<<WHITE; break;
         }
     }
 }
