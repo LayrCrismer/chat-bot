@@ -16,14 +16,30 @@ void data_load_ff(vector<questions_and_answers>& db, const string& filename, str
 
     getline(file, botName);
     cout<<GREEN<<"База успешно загружена!\n"<<WHITE;
-    string q, a;
-    while (getline(file, q) && getline(file, a)) {
-        //2 строчки - очистка от спецсимволов, если такие имеются
-        if (!q.empty() && q.back() == '\r') q.pop_back();
-        if (!a.empty() && a.back() == '\r') a.pop_back();
+    string line, q, a;
+    while (true) {
+        //очистка от спецсимволов и пустых строк, если такие имеются
+        q = "";
+        while (getline(file, line)) {
+            if (line.find_first_not_of(" \r\n\t") != string::npos) {
+                q = line;
+                if (q.back() == '\r') q.pop_back();
+                break;
+            }
+        }
+        a = "";
+        while (getline(file, line)) {
+            if (line.find_first_not_of(" \r\n\t") != string::npos) {
+                a = line;
+                if (a.back() == '\r') a.pop_back();
+                break;
+            }
+        }
 
-        if (!q.empty()) {
-            db.push_back({q,a});
+        if (!q.empty() && !a.empty()) {
+            db.push_back({q, a});
+        } else {
+            break;
         }
     }
     file.close();
@@ -85,14 +101,14 @@ void add_question(vector<questions_and_answers>& db, const string& filename, con
         cout<<"Введите новый вопрос: ";
         getline(cin,q);
         if (q.empty() || q.find_first_not_of(" \t\n\r") == string::npos) {
-            cout<<RED<<"Ошибка: Вопрос не могжет быть пустым!\n"<<WHITE;
+            cout<<RED<<"Ошибка: Вопрос не может быть пустым!\n"<<WHITE;
         } else break;
     }
     while (true) {
         cout<<"Введите ответ на него: ";
         getline(cin,a);
         if (a.empty() || a.find_first_not_of(" \t\n\r") == string::npos) {
-            cout<<RED<<"Ошибка: Ответ не могжет быть пустым!\n"<<WHITE;
+            cout<<RED<<"Ошибка: Ответ не может быть пустым!\n"<<WHITE;
         } else break;
     }
     db.push_back({q, a});
@@ -130,7 +146,7 @@ void edit_question(vector<questions_and_answers>& db, const string& filename, co
             cout<<"Новый вопрос: \n";
             getline(cin,db[index-1].question);
             if (db[index-1].question.empty() || db[index-1].question.find_first_not_of(" \t\n\r") == string::npos) {
-                cout<<RED<<"Ошибка: Вопрос не могжет быть пустым!\n"<<WHITE;
+                cout<<RED<<"Ошибка: Вопрос не может быть пустым!\n"<<WHITE;
             } else break;
         }
         cout<<GRAY<<"Старый ответ: '"<<db[index-1].answer<<"'\n"<<WHITE;
@@ -138,7 +154,7 @@ void edit_question(vector<questions_and_answers>& db, const string& filename, co
             cout<<"Новый ответ: \n";
             getline(cin,db[index-1].answer);
             if (db[index-1].answer.empty() || db[index-1].answer.find_first_not_of(" \t\n\r") == string::npos) {
-                cout<<RED<<"Ошибка: Ответ не могжет быть пустым!\n"<<WHITE;
+                cout<<RED<<"Ошибка: Ответ не может быть пустым!\n"<<WHITE;
             } else break;
         }
 
