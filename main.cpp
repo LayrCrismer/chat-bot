@@ -13,7 +13,6 @@ int main() {
     string filename = "QA_base.txt";
     char loadbase;
 
-
     while (true) {
         cout<<"Загрузить существующую базу данных? (y/n): ";
         if (!(cin>>loadbase)) {
@@ -49,6 +48,7 @@ int main() {
         cout<<"Боту присвоено стандартное имя - Адам\n"<<WHITE;
     }
     cin.ignore();
+
     while(running) {
         cout<<endl;
         cout<<"===============================================\n";

@@ -18,6 +18,7 @@ void data_load_ff(vector<questions_and_answers>& db, const string& filename, str
     cout<<GREEN<<"База успешно загружена!\n"<<WHITE;
     string q, a;
     while (getline(file, q) && getline(file, a)) {
+        //2 строчки - очистка от спецсимволов, если такие имеются
         if (!q.empty() && q.back() == '\r') q.pop_back();
         if (!a.empty() && a.back() == '\r') a.pop_back();
 
@@ -57,7 +58,6 @@ void answer(const vector<questions_and_answers>& db, const string& botName) {
 
         bool found = false;
         for (const auto& item : db) {
-            //cout<<"Сравниваю: ["<<item.question<<"] и ["<<question<<"]"<<endl;
             if (question == "Как тебя зовут?" || question == "Твоё имя?" || question == "Ты кто?") {
                 cout<<CYAN<<botName<<WHITE<<": Меня зовут "<<botName<<"\n";
                 found = true;
