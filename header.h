@@ -7,6 +7,7 @@
 #define CYAN "\033[36m"
 #define GOLD "\033[33m"
 #define MAGENTA "\033[35m"
+#define GRAY "\033[37m"
 
 #include <string>
 #include <vector>

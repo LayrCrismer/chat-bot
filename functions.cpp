@@ -3,18 +3,19 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <limits>
 using namespace std;
 
 void data_load_ff(vector<questions_and_answers>& db, const string& filename, string& botName) {
-    cout<<"Загрузка базы вопросов-ответов...\n";
+    cout<<"\nЗагрузка базы вопросов-ответов...\n";
     ifstream file(filename);
     if (!file.is_open()) {
-        cout<<"Файл не найден";
+        cout<<RED<<"Файл не найден"<<WHITE;
         return;
     }
 
     getline(file, botName);
-    cout<<"База успешно загружена!\n";
+    cout<<GREEN<<"База успешно загружена!\n"<<WHITE;
     string q, a;
     while (getline(file, q) && getline(file, a)) {
         if (!q.empty() && q.back() == '\r') q.pop_back();
@@ -35,10 +36,10 @@ void data_save_tf(vector<questions_and_answers>& db, const string& filename, con
             file<<item.question<<"\n"<<item.answer<<"\n";
         }
         file.close();
-        cout<<"База вопросов-ответов успешно сохранена!\n";
+        cout<<GREEN<<"База вопросов-ответов успешно сохранена!\n"<<WHITE;
     }
     else {
-        cout<<"Ошибка. Не удалось открыть базу вопросов-ответов.\n";
+        cout<<RED<<"Ошибка. Не удалось открыть базу вопросов-ответов.\n"<<WHITE;
     }
 
 }
@@ -113,10 +114,10 @@ void edit_question(vector<questions_and_answers>& db, const string& filename, co
     cin>>index;
     if (index > 0 && index <= db.size()) {
         cin.ignore();
-        cout<<"Старый вопрос: '"<<db[index-1].question<<"'\n";
+        cout<<GRAY<<"Старый вопрос: '"<<db[index-1].question<<"'\n"<<WHITE;
         cout<<"Новый вопрос: \n";
         getline(cin,db[index-1].question);
-        cout<<"Старый ответ: '"<<db[index-1].answer<<"'\n";
+        cout<<GRAY<<"Старый ответ: '"<<db[index-1].answer<<"'\n"<<WHITE;
         cout<<"Новый ответ: \n";
         getline(cin,db[index-1].answer);
         data_save_tf(db,filename, botName);
@@ -150,9 +151,14 @@ void admin_mode(vector<questions_and_answers>& db, const string& filename, strin
         cout<<"===============================================\n";
         cout<<"Введите команду, чтобы продолжить: ";
 
-        cin>>action;
-        if (action == 0) break;
         cin.ignore();
+        if (!(cin>>action)) {
+            cout<<RED<<"\nОшибка! Введите число 0-4!\n"<<WHITE;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+        if (action == 0) break;
         switch (action) {
             case 1: add_question(db, filename, botName); break;
             case 2: delete_question(db, filename, botName); break;
@@ -168,7 +174,7 @@ void questions_view(vector<questions_and_answers>& db, const string& filename) {
     int action;
 
     while (true) {
-        cout<<"\nСПИСОК ВОПРОСОВ И ОТВЕТОВ\n";
+        cout<<MAGENTA<<"\nСПИСОК ВОПРОСОВ И ОТВЕТОВ\n"<<WHITE;
         cout<<"===============================\n";
         for (int i = 0; i < db.size(); i++) {
             cout<<i+1<<". "<<db[i].question<<"\n > Ответ: "<<db[i].answer<<endl;

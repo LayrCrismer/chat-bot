@@ -21,7 +21,7 @@ int main() {
             continue;
         }
         if (loadbase == 'y' || loadbase == 'Y' || loadbase == 'n' || loadbase == 'N') break;
-        cout<<"Некорректный ввод!\n";
+        cout<<RED<<"Некорректный ввод!\n"<<WHITE;
     }
 
     if (loadbase == 'y' || loadbase == 'Y') {
@@ -43,8 +43,10 @@ int main() {
         } while (!fileloaded);
     }
     else if (loadbase == 'n' || loadbase == 'N') {
-        cout<<"Создание новой базы...\nВведите имя для нового файла базы (Например, base.txt): ";
+        cout<<GOLD<<"Создание новой базы...\n"<<WHITE<<"Введите имя для нового файла базы (Например, base.txt): ";
         cin>>filename;
+        cout<<GREEN<<"База данных успешно создана! (Будет сохранена при её изменении)\n";
+        cout<<"Боту присвоено стандартное имя - Адам\n"<<WHITE;
     }
     cin.ignore();
     while(running) {
