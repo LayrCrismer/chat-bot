@@ -2,6 +2,7 @@
 #include "header.h"
 #include <fstream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 void data_load_ff(vector<questions_and_answers>& db, const string& filename) {
@@ -26,10 +27,17 @@ void data_load_ff(vector<questions_and_answers>& db, const string& filename) {
 
 void data_save_tf(vector<questions_and_answers>& db, const string& filename) {
     ofstream file(filename);
-    for (const auto& item : db) {
-        file <<item.question<<"\n"<<item.answer<<"\n";
+    if (file.is_open()) {
+        for (const auto& item : db) {
+            file <<item.question<<"\n"<<item.answer<<"\n";
+        }
+        file.close();
+        cout<<"База вопросов-ответов успешно сохранена!\n";
     }
-    file.close();
+    else {
+        cout<<"Ошибка. Не удалось открыть базу вопросов-ответов.\n";
+    }
+
 }
 
 void answer(const vector<questions_and_answers>& db) {
@@ -57,3 +65,87 @@ void answer(const vector<questions_and_answers>& db) {
         }
     }
 }
+
+void admin_mode(vector<questions_and_answers>& db, const string& filename) {
+
+    int action;
+
+    while (true) {
+        cout<<"===============================================\n";
+        cout<<">>Админ-панель<<\n";
+        cout<<"===============================================\n";
+        cout<<"1. Добавить вопрос-ответ\n";
+        cout<<"2. Удалить вопрос\n";
+        cout<<"3. Редактировать запись\n";
+        cout<<"0. Выход в меню\n";
+        cout<<"===============================================\n";
+        cout<<"Введите команду, чтобы продолжить: ";
+
+        cin>>action;
+        if (action == 0) break;
+        cin.ignore();
+        if (action == 1) {
+            string q,a;
+            cout<<"Введите новый вопрос: ";
+            getline(cin,q);
+            //cin.ignore();
+            cout<<"Введите ответ на него: ";
+            getline(cin,a);
+            db.push_back({q,a});
+            data_save_tf(db,filename);
+        }
+        else if (action==2) {
+            int index;
+            if (db.size()==0) {
+                cout<<"\nБаза вопросов-ответов пуста.\n";
+                continue;
+            }
+            cout<<"Введите номер вопроса для удаления: \n";
+            cin>>index;
+            if (index > 0 && index <= db.size()) {
+                db.erase(db.begin() + (index-1));
+                data_save_tf(db,filename);
+            } else {
+                cout<<"Неверный номер!\n";
+            }
+        }
+        else if (action == 3) {
+            int index;
+            if (db.size()==0) {
+                cout<<"\nБаза вопросов-ответов пуста.\n";
+                continue;
+            }
+            cout<<"Введите номер вопроса для редактирования: \n";
+            cin>>index;
+            if (index > 0 && index <= db.size()) {
+                cin.ignore();
+                cout<<"Новый текст вопроса: \n";
+                getline(cin,db[index-1].question);
+                cout<<"Новый текст ответа: \n";
+                getline(cin,db[index-1].answer);
+                data_save_tf(db,filename);
+            }
+            else {
+                cout<<"Неверный номер!\n";
+            }
+        }
+    }
+}
+
+void questions_view(vector<questions_and_answers>& db, const string& filename) {
+
+    int action;
+
+    while (true) {
+        cout<<"\nСПИСОК ВОПРОСОВ И ОТВЕТОВ\n";
+        cout<<"===============================\n";
+        for (int i = 0; i < db.size(); i++) {
+            cout<<i+1<<". "<<db[i].question<<"\n > Ответ: "<<db[i].answer<<endl;
+        }
+        cout<<"===============================\n";
+        cout<<"Введите '0' для выхода в главное меню\n";
+        cin>>action;
+        if (action == 0) break;
+    }
+}
+

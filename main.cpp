@@ -1,5 +1,5 @@
 #include <iostream>
-#include <limits>
+#include <fstream>
 
 #include "header.h"
 using namespace std;
@@ -10,8 +10,33 @@ int main() {
     bool running = true;
     vector<questions_and_answers> answersesbase;
     string filename = "QA_base.txt";
+    char loadbase;
+    cout<<"Добро пожаловать в Чат-бота!\nЗагрузить существующую базу данных? (y/n): ";
+    cin>>loadbase;
 
-    data_load_ff(answersesbase, filename);
+    if (loadbase == 'y' || loadbase == 'Y') {
+
+        bool fileloaded = false;
+        do {
+            cout<<"Введите название файла (name.txt): ";
+            cin>>filename;
+
+            ifstream checkfile(filename);
+            if (checkfile.is_open()) {
+                checkfile.close();
+                data_load_ff(answersesbase, filename);
+                fileloaded = true;
+            }
+            else {
+                cout<<"Ошибка: файл "<<filename<<" не найден. Попробуйте снова.\n";
+            }
+        } while (!fileloaded);
+    }
+    else {
+        cout<<"Создание новой базы...\nВведите имя для нового файла базы (Например, base.txt): ";
+        cin>>filename;
+    }
+    cin.ignore();
 
     while(running) {
         cout<<endl;
@@ -25,25 +50,33 @@ int main() {
         cout<<"===============================================\n";
         cout<<"Введите команду, чтобы продолжить: ";
         try {
-            cin>>choise;
+            if (!(cin>>choise)) {
+                cout<<"\nОшибка! Введите число 0-3!\n";
+                cin.clear();
+                cin.ignore();
+                continue;
+            }
             switch(choise) {
                 case 1:
                     answer(answersesbase);
                     break;
                 case 2:
-                    //код
+                    questions_view(answersesbase, filename);
                     break;
                 case 3:
-                    //код
+                    admin_mode(answersesbase, filename);
                     break;
                 case 0:
-                    //код
+                    running = false;
+                    break;
+                default:
+                    cout<<"\nОшибка! Введите число 0-3!\n";
                     break;
             }
         } catch (exception& e) {
-            cout<<"Ошибка!";
+            cout<<"Ошибка! Такого варианта нет.";
             cin.clear();
-            cin.ignore(100,'\n');
+            cin.ignore();
         }
     }
 }
