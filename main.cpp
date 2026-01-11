@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-
+#include <limits>
 #include "header.h"
 using namespace std;
 
@@ -64,7 +64,7 @@ int main() {
             if (!(cin>>choise)) {
                 cout<<"\nОшибка! Введите число 0-3!\n";
                 cin.clear();
-                cin.ignore();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
             switch(choise) {
@@ -87,7 +87,7 @@ int main() {
         } catch (exception& e) {
             cout<<"Ошибка! Такого варианта нет.";
             cin.clear();
-            cin.ignore();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
     }
 }
