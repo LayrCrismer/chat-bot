@@ -42,8 +42,25 @@ int main() {
         } while (!fileloaded);
     }
     else if (loadbase == 'n' || loadbase == 'N') {
-        cout<<GOLD<<"Создание новой базы...\n"<<WHITE<<"Введите имя для нового файла базы (Например, base.txt): ";
-        cin>>filename;
+        cout<<GOLD<<"Создание новой базы...\n"<<WHITE;
+        while (true){
+            cout<<"Введите имя для нового файла базы (Например, base.txt): ";
+            cin>>filename;
+
+            size_t dot = filename.find_last_of('.');
+
+            if (dot == string::npos) {
+                filename += ".txt";
+                break;
+            } else {
+                string extens = filename.substr(dot);
+                if (extens == ".txt") {
+                    break;
+                } else {
+                    cout<<RED<<"Ошибка: Неверное расширение "<<WHITE<<"'"<<extens<<"'. База должна быть в формате .txt\n";
+                }
+            }
+        }
         cout<<GREEN<<"База данных успешно создана! (Будет сохранена при её изменении)\n";
         cout<<"Боту присвоено стандартное имя - Адам\n"<<WHITE;
     }
