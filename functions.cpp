@@ -183,8 +183,7 @@ void rename_bot(vector<questions_and_answers>& db, const string& filename, strin
 }
 
 void admin_mode(vector<questions_and_answers>& db, const string& filename, string& botName) {
-
-    int action;
+    string adminInput;
 
     while (true) {
         cout<<"===============================================\n";
@@ -198,14 +197,18 @@ void admin_mode(vector<questions_and_answers>& db, const string& filename, strin
         cout<<"===============================================\n";
         cout<<"Введите команду, чтобы продолжить: ";
 
-        if (!(cin>>action)) {
+        cin>>adminInput;
+
+        if (adminInput.length() != 1 || !isdigit(adminInput[0])) {
             cout<<RED<<"\nОшибка! Введите число 0-4!\n"<<WHITE;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
         }
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        int action = adminInput[0] - '0';
         if (action == 0) break;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         switch (action) {
             case 1: add_question(db, filename, botName); break;
             case 2: delete_question(db, filename, botName); break;

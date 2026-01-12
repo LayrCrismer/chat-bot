@@ -12,15 +12,18 @@ int main() {
     vector<questions_and_answers> answersesbase;
     string filename = "QA_base.txt";
     char loadbase;
+    string input;
 
     while (true) {
         cout<<"Загрузить существующую базу данных? (y/n): ";
-        if (!(cin>>loadbase)) {
-            cin.ignore();
-            continue;
+        cin>>input;
+        if (input.length()==1) {
+            loadbase = input[0];
+            if (loadbase == 'y' || loadbase == 'Y' || loadbase == 'n' || loadbase == 'N') break;
         }
-        if (loadbase == 'y' || loadbase == 'Y' || loadbase == 'n' || loadbase == 'N') break;
         cout<<RED<<"Некорректный ввод!\n"<<WHITE;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
 
     if (loadbase == 'y' || loadbase == 'Y') {
@@ -67,6 +70,8 @@ int main() {
     cin.ignore();
 
     while(running) {
+        string menuInput;
+
         cout<<endl;
         cout<<"===============================================\n";
         cout<<GREEN<<"     Вас приветствует чат-бот "<<botName<<"!\n"<<WHITE;
@@ -78,13 +83,15 @@ int main() {
         cout<<"0. Выход\n";
         cout<<"===============================================\n";
         cout<<"Введите команду, чтобы продолжить: ";
+        cin>>menuInput;
+
+        if (menuInput.length() != 1 || !isdigit(menuInput[0])) {
+            cout<<RED<<"\nОшибка! Введите число 0-3!\n"<<WHITE;
+            continue;
+        }
+        choise=menuInput[0]-'0';
+
         try {
-            if (!(cin>>choise)) {
-                cout<<RED<<"\nОшибка! Введите число 0-3!\n"<<WHITE;
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                continue;
-            }
             switch(choise) {
                 case 1:
                     answer(answersesbase, botName);
